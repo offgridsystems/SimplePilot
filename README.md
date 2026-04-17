@@ -1,4 +1,5 @@
-<img width="2000" height="2268" alt="2026-04-16 11 41 08" src="https://github.com/user-attachments/assets/2e628462-8c82-4f64-9b98-1e57321714fd" />
+<img width="4032" height="2268" alt="2026-04-17 09 53 09" src="https://github.com/user-attachments/assets/50f60895-67e9-492f-9db7-decf5bd7543a" />
+
 
   SIMPLEPILOT v2.12 — Integrated Autopilot + DMP Compass
   ESP32 + ICM-20948 (9-axis DMP) + Joystick + Linear Actuator
