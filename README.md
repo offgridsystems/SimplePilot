@@ -1,7 +1,6 @@
-===============================================================
+
   SIMPLEPILOT v2.12 — Integrated Autopilot + DMP Compass
   ESP32 + ICM-20948 (9-axis DMP) + Joystick + Linear Actuator
-===============================================================
 
 OVERVIEW
 ────────
@@ -70,9 +69,9 @@ LIBRARY REQUIREMENT
     will fail with link errors.
 
 
-================================================================
+
   PI CONTROLLER — AUTO MODE ONLY
-================================================================
+
 
   The auto-pilot uses a PI controller instead of the old P-only
   (proportional) approach. This produces more aggressive steering
@@ -123,9 +122,9 @@ LIBRARY REQUIREMENT
     for longer pulses; decrease for shorter, more frequent pulses.
 
 
-================================================================
+
   PI TUNING GUIDE
-================================================================
+
 
   The PI controller has 5 tunable constants. Start with defaults
   and adjust one at a time on the water.
@@ -162,9 +161,9 @@ LIBRARY REQUIREMENT
   I = integral sum (accumulated correction)
 
 
-================================================================
+
   DAC THROTTLE CALIBRATION GUIDE
-================================================================
+
 
   The ESP32's DAC (GPIO 25) outputs a voltage that passes through
   an Op-Amp boost circuit to drive the outboard's hall-effect
@@ -272,9 +271,9 @@ LIBRARY REQUIREMENT
      reachable without over-revving.
 
 
-================================================================
+
   WIRING DIAGRAM — Pimoroni ICM-20948 Breakout
-================================================================
+
 
   The Pimoroni ICM-20948 Breakout has 6 through-hole pins.
   Only 4 are needed for I2C operation (VCC, GND, SDA, SCL).
@@ -298,9 +297,9 @@ LIBRARY REQUIREMENT
   address 0x69): change AD0_VAL to 1.
 
 
-================================================================
+
   WIRING DIAGRAM — Full SimplePilot v2.12 System
-================================================================
+
 
   Component           ESP32 GPIO    Function
   ─────────────────  ────────────  ──────────────────────
@@ -317,9 +316,9 @@ LIBRARY REQUIREMENT
   ICM-20948 SCL      GPIO 22       I2C clock
 
 
-================================================================
+
   BOOT SEQUENCE
-================================================================
+
 
   When powered on, the ESP32 goes through this sequence:
 
@@ -359,9 +358,8 @@ LIBRARY REQUIREMENT
       └─────────────────────────────────────────────────┘
 
 
-================================================================
   AUTO-CALIBRATION PROCEDURE
-================================================================
+
 
   First boot (or after pressing 'R' and rebooting):
 
@@ -388,9 +386,9 @@ LIBRARY REQUIREMENT
   unreliable). Manual joystick steering still works.
 
 
-================================================================
+
   SERIAL OUTPUT FORMAT
-================================================================
+
 
   With autopilot OFF (manual mode):
     JoyCruise:0, Out:41, Cruise:0
@@ -411,9 +409,9 @@ LIBRARY REQUIREMENT
     [STEERING]— Autopilot on, actuator actively correcting
 
 
-================================================================
+
   SERIAL COMMANDS
-================================================================
+
 
   Key  Action
   ───  ─────────────────────────────────────────────────
@@ -426,9 +424,9 @@ LIBRARY REQUIREMENT
   session. Press 'S' to force-save even if already saved.
 
 
-================================================================
+
   AUTOPILOT OPERATION
-================================================================
+
 
   MANUAL MODE (default):
   • Joystick left/right steers the rudder directly
@@ -455,9 +453,9 @@ LIBRARY REQUIREMENT
   engage auto mode.
 
 
-================================================================
+
   RECALIBRATION FOR IMU MAG SENSOR
-================================================================
+
 
   Recalibrate when:
   • You install the sensor in a new location
@@ -472,9 +470,9 @@ LIBRARY REQUIREMENT
   4. Biases auto-save — done!
 
 
-================================================================
+
   TROUBLESHOOTING
-================================================================
+
 
   SYMPTOM                          LIKELY CAUSE / FIX
   ───────────────────────────────  ──────────────────────────
@@ -518,9 +516,9 @@ LIBRARY REQUIREMENT
                                    Calibration Guide above.
 
 
-================================================================
+
   FILE STRUCTURE
-================================================================
+
 
   simplepilot_v2.12/
   ├── simplepilot_v2.12.ino     Main: config, globals, setup, loop
@@ -534,9 +532,9 @@ LIBRARY REQUIREMENT
   └── README_simplepilot_v2.12.txt  This file
 
 
-================================================================
+
   VERSION HISTORY
-================================================================
+
 
   v2.12 (2026) — Manual tiller fix
     • BUG FIX: Manual tiller control broken in v2.11 —
