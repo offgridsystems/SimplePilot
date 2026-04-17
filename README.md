@@ -1,4 +1,4 @@
-<img width="4032" height="2268" alt="2026-04-17 09 53 09" src="https://github.com/user-attachments/assets/50f60895-67e9-492f-9db7-decf5bd7543a" />
+<img width="4032" height="1500" alt="2026-04-17 09 53 09" src="https://github.com/user-attachments/assets/50f60895-67e9-492f-9db7-decf5bd7543a" />
 
 
   SIMPLEPILOT v2.12 — Integrated Autopilot + DMP Compass
