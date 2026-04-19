@@ -6,7 +6,7 @@
 
 **A small-boat autopilot that steers your outboard's tiller.**
 
-SimplePilot bolts onto your outboard motor's tiller and uses a linear actuator to steer for you. It holds a compass heading automatically, lets you steer manually with a joystick, and keeps your throttle steady with cruise control — all from a single ESP32 board.
+SimplePilot bolts onto your outboard motor's tiller and uses a linear actuator to steer for you. It holds a compass heading automatically, lets you steer manually with a joystick, and keeps your throttle steady with cruise control — all from a single ESP32 board. Software and hardware design by human being, software coding and debugging in conjunction with AI agents Gemini and freebuff.
 
 ---
 
