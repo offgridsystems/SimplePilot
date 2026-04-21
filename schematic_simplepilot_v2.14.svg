@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SimplePilot v2.14 — ESP32 Wiring Schematic (Improved) -->
+<!-- All power and ground return wires shown explicitly -->
+<!-- v2: Added I2C pullups, H-Bridge EN, fuse symbol, Op-Amp detail, -->
+<!--     junction dots, AD0 pin, GPIO34 input-only note -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1260 1020" font-family="Consolas, monospace">
+  <defs>
+    <style>
+      .wire-sda    { stroke: #FF9800; stroke-width: 2.5; fill: none; }
+      .wire-scl    { stroke: #795548; stroke-width: 2.5; fill: none; }
+      .wire-pilot-pot { stroke: #FFC107; stroke-width: 2.5; fill: none; }
+      .wire-cruise-pot { stroke: #9E9E9E; stroke-width: 2.5; fill: none; }
+      .wire-pwm     { stroke: #F44336; stroke-width: 2.5; fill: none; }
+      .wire-dac     { stroke: #FF5722; stroke-width: 2.5; fill: none; }
+      .wire-pilot-sw { stroke: #4CAF50; stroke-width: 2.5; fill: none; }
+      .wire-cruise-sw { stroke: #F44336; stroke-width: 2.5; fill: none; }
+      .wire-led     { stroke: #FFEB3B; stroke-width: 2.5; fill: none; }
+      .wire-gnd     { stroke: #757575; stroke-width: 2; fill: none; stroke-dasharray: 6,3; }
+      .wire-vcc     { stroke: #E91E63; stroke-width: 2; fill: none; stroke-dasharray: 6,3; }
+      .wire-12v     { stroke: #D32F2F; stroke-width: 2.5; fill: none; stroke-dasharray: 8,3; }
+      .wire-motor   { stroke: #795548; stroke-width: 3; fill: none; }
+      .comp-box     { rx: 8; ry: 8; stroke-width: 2; }
+      .pin-label    { font-size: 11px; fill: #333; }
+      .comp-label   { font-size: 14px; font-weight: bold; fill: #fff; }
+      .comp-sub     { font-size: 10px; fill: #ddd; }
+      .title        { font-size: 22px; font-weight: bold; fill: #1a237e; }
+      .subtitle     { font-size: 13px; fill: #555; }
+      .pin-dot-gnd  { fill: #757575; }
+      .pin-dot-vcc  { fill: #E91E63; }
+      .pin-dot-12v  { fill: #D32F2F; }
+      .junction     { fill: #333; }
+      .resistor-body { fill: #fff; stroke: #333; stroke-width: 1; rx: 2; ry: 2; }
+    </style>
+    <!-- Fuse symbol -->
+    <symbol id="fuse" viewBox="0 0 40 16">
+      <rect x="0" y="2" width="40" height="12" fill="#fff" stroke="#333" stroke-width="1.5" rx="2"/>
+      <line x1="6" y1="8" x2="14" y2="8" stroke="#333" stroke-width="1.5"/>
+      <line x1="26" y1="8" x2="34" y2="8" stroke="#333" stroke-width="1.5"/>
+      <rect x="14" y="5" width="12" height="6" fill="none" stroke="#D32F2F" stroke-width="1.2" rx="3"/>
+      <text x="20" y="10" text-anchor="middle" font-size="6" fill="#D32F2F" font-weight="bold">F</text>
+    </symbol>
+    <!-- GND symbol -->
+    <symbol id="gnd-symbol" viewBox="0 0 20 12">
+      <line x1="10" y1="0" x2="10" y2="4" stroke="#757575" stroke-width="2"/>
+      <line x1="2" y1="4" x2="18" y2="4" stroke="#757575" stroke-width="2"/>
+      <line x1="5" y1="7" x2="15" y2="7" stroke="#757575" stroke-width="1.5"/>
+      <line x1="8" y1="10" x2="12" y2="10" stroke="#757575" stroke-width="1"/>
+    </symbol>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1260" height="1020" fill="#fafafa" rx="12"/>
+  
+  <!-- Title Block -->
+  <text x="630" y="40" text-anchor="middle" class="title">SimplePilot v2.14 — ESP32 Wiring Schematic</text>
+  <text x="630" y="60" text-anchor="middle" class="subtitle">Outboard Tiller Autopilot with ICM-20948 DMP 9-Axis Compass</text>
+  <line x1="100" y1="70" x2="1160" y2="70" stroke="#1a237e" stroke-width="1.5" opacity="0.3"/>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  GND BUS (bottom)                                           -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <line x1="30" y1="960" x2="1230" y2="960" stroke="#757575" stroke-width="4"/>
+  <text x="630" y="990" text-anchor="middle" font-size="12" fill="#757575" font-weight="bold">⏚ GND BUS — Common Ground (ESP32 · H-Bridge · Op-Amp · ICM-20948 · Joystick · Switches · LEDs)</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  3V3 RAIL (left side, vertical)                             -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <line x1="30" y1="200" x2="30" y2="720" stroke="#E91E63" stroke-width="3" stroke-dasharray="8,3"/>
+  <text x="18" y="460" text-anchor="middle" font-size="10" fill="#E91E63" font-weight="bold" transform="rotate(-90,18,460)">3V3 RAIL (from ESP32)</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  12V RAIL (right side, vertical)                            -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <line x1="1230" y1="110" x2="1230" y2="520" stroke="#D32F2F" stroke-width="3" stroke-dasharray="8,3"/>
+  <text x="1245" y="315" font-size="10" fill="#D32F2F" font-weight="bold" transform="rotate(90,1245,315)">12V RAIL (from Battery)</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  ESP32 BOARD (center)                                       -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(440, 160)">
+    <!-- Board body -->
+    <rect x="0" y="0" width="240" height="560" fill="#37474F" stroke="#263238" class="comp-box" rx="10"/>
+    <rect x="10" y="10" width="220" height="540" fill="#455A64" rx="6"/>
+    <!-- ESP32 chip -->
+    <rect x="50" y="175" width="140" height="120" fill="#546E7A" stroke="#607D8B" stroke-width="1" rx="4"/>
+    <text x="120" y="225" text-anchor="middle" font-size="16" fill="#CFD8DC" font-weight="bold">ESP32</text>
+    <text x="120" y="243" text-anchor="middle" font-size="9" fill="#90A4AE">DevKit V1</text>
+    <!-- USB connector -->
+    <rect x="80" y="0" width="80" height="20" fill="#78909C" stroke="#546E7A" stroke-width="1" rx="3"/>
+    <text x="120" y="14" text-anchor="middle" font-size="8" fill="#fff">USB</text>
+    <!-- Antenna area -->
+    <rect x="70" y="530" width="100" height="15" fill="#B0BEC5" stroke="#90A4AE" stroke-width="1" rx="3"/>
+    <text x="120" y="542" text-anchor="middle" font-size="7" fill="#455A64">ANTENNA</text>
+
+    <!-- Left-side pin labels (inputs) -->
+    <circle cx="0" cy="80" r="4" fill="#4CAF50"/>
+    <text x="10" y="84" font-size="10" fill="#C8E6C9">34 CRUISE_JOY</text>
+    <text x="10" y="95" font-size="7" fill="#81C784">⚠ Input-only pin</text>
+    
+    <circle cx="0" cy="120" r="4" fill="#4CAF50"/>
+    <text x="10" y="124" font-size="10" fill="#C8E6C9">32 PILOT_JOY</text>
+    
+    <circle cx="0" cy="155" r="4" fill="#4CAF50"/>
+    <text x="10" y="159" font-size="10" fill="#4CAF50">33 PILOT_SW</text>
+    
+    <circle cx="0" cy="330" r="4" fill="#F44336"/>
+    <text x="10" y="334" font-size="10" fill="#F44336">4  CRUISE_SW</text>
+    
+    <circle cx="0" cy="385" r="4" fill="#FF9800"/>
+    <text x="10" y="389" font-size="10" fill="#FF9800">21 SDA</text>
+    
+    <circle cx="0" cy="415" r="4" fill="#795548"/>
+    <text x="10" y="419" font-size="10" fill="#795548">22 SCL</text>
+
+    <circle cx="0" cy="460" r="4" fill="#E91E63"/>
+    <text x="10" y="464" font-size="10" fill="#F8BBD0">3V3</text>
+
+    <circle cx="0" cy="490" r="4" fill="#757575"/>
+    <text x="10" y="494" font-size="10" fill="#BDBDBD">GND</text>
+
+    <!-- Right-side pin labels (outputs) -->
+    <circle cx="240" cy="80" r="4" fill="#FF5722"/>
+    <text x="230" y="84" font-size="10" fill="#FF5722" text-anchor="end">DAC 25</text>
+    
+    <circle cx="240" cy="125" r="4" fill="#F44336"/>
+    <text x="230" y="129" font-size="10" fill="#FFCDD2" text-anchor="end">PWM_A 26</text>
+    
+    <circle cx="240" cy="165" r="4" fill="#F44336"/>
+    <text x="230" y="169" font-size="10" fill="#FFCDD2" text-anchor="end">PWM_B 27</text>
+    
+    <circle cx="240" cy="270" r="4" fill="#FFEB3B"/>
+    <text x="230" y="274" font-size="10" fill="#FFF9C4" text-anchor="end">LED 18</text>
+    
+    <circle cx="240" cy="310" r="4" fill="#FFEB3B"/>
+    <text x="230" y="314" font-size="10" fill="#FFF9C4" text-anchor="end">LED 19</text>
+    
+    <circle cx="240" cy="460" r="4" fill="#D32F2F"/>
+    <text x="230" y="464" font-size="10" fill="#FFCDD2" text-anchor="end">VIN 5V</text>
+    
+    <circle cx="240" cy="490" r="4" fill="#757575"/>
+    <text x="230" y="494" font-size="10" fill="#BDBDBD" text-anchor="end">GND</text>
+  </g>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  ICM-20948 COMPASS MODULE                                    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(100, 400)">
+    <rect x="0" y="0" width="170" height="130" fill="#1565C0" stroke="#0D47A1" class="comp-box"/>
+    <text x="85" y="28" text-anchor="middle" class="comp-label">ICM-20948</text>
+    <text x="85" y="46" text-anchor="middle" class="comp-sub">9-Axis DMP IMU</text>
+    <text x="85" y="62" text-anchor="middle" font-size="9" fill="#90CAF9">Pimoroni (AD0=GND)</text>
+    <text x="85" y="76" text-anchor="middle" font-size="9" fill="#90CAF9">I2C addr: 0x68</text>
+    <!-- Pin dots on right edge -->
+    <circle cx="170" cy="92" r="3" class="pin-dot-vcc"/>   <!-- VCC -->
+    <circle cx="170" cy="102" r="3" fill="#FF9800"/>        <!-- SDA (orange) -->
+    <circle cx="170" cy="112" r="3" fill="#795548"/>        <!-- SCL (brown) -->
+    <circle cx="170" cy="122" r="3" class="pin-dot-gnd"/>   <!-- GND -->
+    <text x="155" y="95" font-size="7" fill="#F8BBD0" text-anchor="end">VCC</text>
+    <text x="155" y="105" font-size="7" fill="#FF9800" text-anchor="end">SDA</text>
+    <text x="155" y="115" font-size="7" fill="#795548" text-anchor="end">SCL</text>
+    <text x="155" y="125" font-size="7" fill="#BDBDBD" text-anchor="end">GND</text>
+    <!-- AD0 pin on bottom-left (tied to GND for Pimoroni) -->
+    <circle cx="15" cy="130" r="3" class="pin-dot-gnd"/>
+    <text x="30" y="133" font-size="7" fill="#BDBDBD">AD0</text>
+  </g>
+
+  <!-- AD0 wire to GND bus (routed below IMU box to avoid overlap) -->
+  <!-- AD0 pin is at absolute (115, 530). Route DOWN, then LEFT to join GND path -->
+  <path d="M115,530 L115,540 L60,540" stroke="#757575" stroke-width="1.5" stroke-dasharray="6,3" fill="none"/>
+  <circle cx="60" cy="540" r="3" class="junction"/> <!-- T-junction AD0 + IMU GND -->
+  <text x="70" y="538" font-size="7" fill="#757575">AD0→GND</text>
+
+  <!-- I2C Wires: ESP32 → ICM-20948 -->
+  <!-- SDA wire: orange -->
+  <path d="M440,545 L310,545 L310,502 L270,502" class="wire-sda"/>
+  <text x="350" y="539" class="pin-label" fill="#FF9800">SDA (GPIO21)</text>
+  
+  <!-- SCL wire: brown -->
+  <path d="M440,575 L330,575 L330,512 L270,512" class="wire-scl"/>
+  <text x="350" y="569" class="pin-label" fill="#795548">SCL (GPIO22)</text>
+
+  <!-- I2C pullups provided by ESP32 internally — no external resistors needed -->
+
+  <!-- ICM-20948 VCC: from 3V3 rail (routed ABOVE the IMU box to avoid overlap) -->
+  <!-- ICM VCC pin is at absolute (270, 492). Route UP from pin, then LEFT above box (y<400), then to 3V3 rail -->
+  <path d="M270,492 L270,395 L30,395" class="wire-vcc"/>
+  <circle cx="30" cy="395" r="4" fill="#E91E63"/>
+  <text x="130" y="390" class="pin-label" fill="#E91E63">3V3</text>
+
+  <!-- ICM-20948 GND: to GND bus (routed BELOW the IMU box to avoid overlap) -->
+  <!-- ICM GND pin is at absolute (270, 522). Route DOWN from pin, then LEFT below box (y>530), then to GND bus -->
+  <path d="M270,522 L270,540 L60,540 L60,960" class="wire-gnd"/>
+  <circle cx="60" cy="960" r="4" class="junction"/>
+  <text x="70" y="720" class="pin-label" fill="#757575">GND</text>
+
+
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  2-AXIS JOYSTICK                                             -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(100, 130)">
+    <rect x="0" y="0" width="180" height="150" fill="#2E7D32" stroke="#1B5E20" class="comp-box"/>
+    <text x="90" y="25" text-anchor="middle" class="comp-label">2-Axis Joystick</text>
+    <text x="90" y="42" text-anchor="middle" class="comp-sub">Potentiometer Module</text>
+    <!-- Joystick cross icon -->
+    <line x1="75" y1="58" x2="105" y2="58" stroke="#A5D6A7" stroke-width="3"/>
+    <line x1="90" y1="43" x2="90" y2="73" stroke="#A5D6A7" stroke-width="3"/>
+    <circle cx="90" cy="58" r="8" fill="#66BB6A" stroke="#43A047" stroke-width="1.5"/>
+    <!-- Pin dots on right edge -->
+    <circle cx="180" cy="95" r="3" fill="#9E9E9E"/>   <!-- VRx (cruise, grey) -->
+    <circle cx="180" cy="110" r="3" fill="#FFC107"/>  <!-- VRy (pilot, yellow) -->
+    <circle cx="180" cy="125" r="3" class="pin-dot-vcc"/>  <!-- VCC -->
+    <circle cx="180" cy="138" r="3" class="pin-dot-gnd"/>  <!-- GND -->
+    <text x="165" y="98" font-size="8" fill="#9E9E9E" text-anchor="end">VRx (Cruise)</text>
+    <text x="165" y="113" font-size="8" fill="#FFC107" text-anchor="end">VRy (Pilot)</text>
+    <text x="165" y="128" font-size="8" fill="#F8BBD0" text-anchor="end">VCC</text>
+    <text x="165" y="141" font-size="8" fill="#BDBDBD" text-anchor="end">GND</text>
+    <!-- SW pin (not used) -->
+    <text x="10" y="95" font-size="8" fill="#81C784">SW (N/C)</text>
+  </g>
+
+  <!-- Joystick Analog Wires → ESP32 (separated to avoid overlap) -->
+  <!-- VRx (Cruise/Throttle) — grey wire → GPIO34 (route HIGHER) -->
+  <path d="M280,225 L360,225 L360,240 L440,240" class="wire-cruise-pot"/>
+  <text x="310" y="219" class="pin-label" fill="#9E9E9E">VRx → GPIO34</text>
+  
+  <!-- VRy (Pilot/Rudder) — yellow wire → GPIO32 (route LOWER, offset path) -->
+  <path d="M280,240 L340,240 L340,280 L440,280" class="wire-pilot-pot"/>
+  <text x="350" y="305" class="pin-label" fill="#FFC107">VRy → GPIO32</text>
+
+  <!-- Joystick VCC: from 3V3 rail (route UP then LEFT, avoiding IMU area) -->
+  <path d="M280,255 L280,215 L30,215" class="wire-vcc"/>
+  <circle cx="30" cy="215" r="4" fill="#E91E63"/>
+  <text x="150" y="210" class="pin-label" fill="#E91E63">3V3</text>
+
+  <!-- Joystick GND: to GND bus (route LEFT at top, then DOWN avoiding IMU area) -->
+  <path d="M280,268 L280,280 L50,280 L50,960" class="wire-gnd"/>
+  <circle cx="50" cy="960" r="4" class="junction"/>
+  <text x="58" y="650" class="pin-label" fill="#757575">GND</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  PILOT TOGGLE SWITCH                                        -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(100, 600)">
+    <rect x="0" y="0" width="150" height="85" fill="#6A1B9A" stroke="#4A148C" class="comp-box"/>
+    <text x="75" y="25" text-anchor="middle" class="comp-label">Pilot Switch</text>
+    <text x="75" y="42" text-anchor="middle" class="comp-sub">SPST Toggle</text>
+    <text x="75" y="58" text-anchor="middle" font-size="9" fill="#E1BEE7">LOW = ON (INPUT_PULLUP)</text>
+    <!-- Internal pullup symbol -->
+    <line x1="135" y1="15" x2="135" y2="30" stroke="#E1BEE7" stroke-width="1"/>
+    <rect x="129" y="30" width="12" height="20" fill="none" stroke="#E1BEE7" stroke-width="0.8" rx="1"/>
+    <text x="135" y="42" text-anchor="middle" font-size="5" fill="#E1BEE7">10k</text>
+    <line x1="135" y1="50" x2="135" y2="55" stroke="#E1BEE7" stroke-width="1"/>
+    <!-- Pin dots -->
+    <circle cx="150" cy="72" r="3" fill="#4CAF50"/>     <!-- Signal (green) -->
+    <circle cx="75" cy="85" r="3" class="pin-dot-gnd"/>  <!-- GND -->
+    <text x="137" y="75" font-size="7" fill="#4CAF50" text-anchor="end">SIG</text>
+    <text x="90" y="82" font-size="7" fill="#BDBDBD">GND</text>
+  </g>
+
+  <!-- Pilot switch signal wire: GPIO33 (GREEN wire) -->
+  <path d="M250,672 L350,672 L350,315 L440,315" class="wire-pilot-sw"/>
+  <text x="280" y="667" class="pin-label" fill="#4CAF50">GPIO33</text>
+  <text x="310" y="690" font-size="8" fill="#4CAF50">↑ internal pullup</text>
+
+  <!-- Pilot switch GND wire: to GND bus (route LEFT of cruise button box) -->
+  <!-- Pilot SW GND pin at absolute (175, 685). Cruise button box at (100,720)-(250,805). -->
+  <!-- Route LEFT then DOWN to stay x<100, avoiding the cruise button -->
+  <path d="M175,685 L60,685 L60,960" class="wire-gnd"/>
+  <circle cx="60" cy="960" r="4" class="junction"/>
+  <text x="68" y="820" class="pin-label" fill="#757575">GND</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  CRUISE MOMENTARY SWITCH                                    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(100, 720)">
+    <rect x="0" y="0" width="150" height="85" fill="#6A1B9A" stroke="#4A148C" class="comp-box"/>
+    <text x="75" y="25" text-anchor="middle" class="comp-label">Cruise Button</text>
+    <text x="75" y="42" text-anchor="middle" class="comp-sub">Momentary N.O.</text>
+    <text x="75" y="58" text-anchor="middle" font-size="9" fill="#E1BEE7">LOW = Pressed (PULLUP)</text>
+    <!-- Internal pullup symbol -->
+    <line x1="135" y1="15" x2="135" y2="30" stroke="#E1BEE7" stroke-width="1"/>
+    <rect x="129" y="30" width="12" height="20" fill="none" stroke="#E1BEE7" stroke-width="0.8" rx="1"/>
+    <text x="135" y="42" text-anchor="middle" font-size="5" fill="#E1BEE7">10k</text>
+    <line x1="135" y1="50" x2="135" y2="55" stroke="#E1BEE7" stroke-width="1"/>
+    <!-- Pin dots -->
+    <circle cx="150" cy="72" r="3" fill="#F44336"/>     <!-- Signal (red) -->
+    <circle cx="75" cy="85" r="3" class="pin-dot-gnd"/>  <!-- GND -->
+    <text x="137" y="75" font-size="7" fill="#F44336" text-anchor="end">SIG</text>
+    <text x="90" y="82" font-size="7" fill="#BDBDBD">GND</text>
+  </g>
+
+  <!-- Cruise button signal wire: GPIO4 (RED wire) -->
+  <path d="M250,792 L370,792 L370,490 L440,490" class="wire-cruise-sw"/>
+  <text x="280" y="787" class="pin-label" fill="#F44336">GPIO4</text>
+  <text x="310" y="805" font-size="8" fill="#F44336">↑ internal pullup</text>
+
+  <!-- Cruise button GND wire: to GND bus -->
+  <path d="M175,805 L70,805 L70,960" class="wire-gnd"/>
+  <circle cx="70" cy="960" r="4" class="junction"/>
+  <text x="78" y="880" class="pin-label" fill="#757575">GND</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  H-BRIDGE MOTOR DRIVER                                      -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(870, 90)">
+    <rect x="0" y="0" width="210" height="145" fill="#B71C1C" stroke="#7F0000" class="comp-box"/>
+    <text x="105" y="22" text-anchor="middle" class="comp-label">H-Bridge Driver</text>
+    <text x="105" y="40" text-anchor="middle" class="comp-sub">e.g. BTS7960 / VNH2SP30</text>
+    <text x="105" y="56" text-anchor="middle" font-size="9" fill="#FFCDD2">PWM_A=Right/Starboard</text>
+    <text x="105" y="70" text-anchor="middle" font-size="9" fill="#FFCDD2">PWM_B=Left/Port</text>
+    <!-- Pin dots on left edge -->
+    <circle cx="0" cy="88" r="3" fill="#F44336"/>       <!-- PWM_A -->
+    <circle cx="0" cy="100" r="3" fill="#F44336"/>      <!-- PWM_B -->
+    <circle cx="0" cy="112" r="3" class="pin-dot-12v"/> <!-- VCC 12V -->
+    <circle cx="0" cy="124" r="3" fill="#4CAF50"/>      <!-- EN (enable) -->
+    <circle cx="0" cy="136" r="3" class="pin-dot-gnd"/> <!-- GND -->
+    <text x="12" y="91" font-size="8" fill="#FFCDD2">PWM_A</text>
+    <text x="12" y="103" font-size="8" fill="#FFCDD2">PWM_B</text>
+    <text x="12" y="115" font-size="8" fill="#FFCDD2">VCC 12V</text>
+    <text x="12" y="127" font-size="8" fill="#C8E6C9">EN (enable)</text>
+    <text x="12" y="139" font-size="8" fill="#BDBDBD">GND</text>
+    <!-- Pin dots on right edge (motor out) -->
+    <circle cx="210" cy="95" r="3" fill="#795548"/>  <!-- M+ -->
+    <circle cx="210" cy="110" r="3" fill="#795548"/> <!-- M- -->
+    <text x="198" y="98" font-size="8" fill="#D7CCC8" text-anchor="end">M+</text>
+    <text x="198" y="113" font-size="8" fill="#D7CCC8" text-anchor="end">M−</text>
+  </g>
+
+  <!-- H-Bridge PWM_A wire: ESP32 GPIO26 -->
+  <path d="M680,285 L780,285 L780,178 L870,178" class="wire-pwm"/>
+  <text x="760" y="172" class="pin-label" fill="#F44336">PWM_A (GPIO26)</text>
+
+  <!-- H-Bridge PWM_B wire: ESP32 GPIO27 -->
+  <path d="M680,325 L800,325 L800,190 L870,190" class="wire-pwm"/>
+  <text x="760" y="210" class="pin-label" fill="#F44336">PWM_B (GPIO27)</text>
+
+  <!-- H-Bridge 12V VCC: from 12V rail -->
+  <path d="M870,202 L820,202 L820,310 L1230,310" class="wire-12v"/>
+  <circle cx="1230" cy="310" r="4" fill="#D32F2F"/>
+  <text x="980" y="305" class="pin-label" fill="#D32F2F">12V (Battery)</text>
+
+  <!-- H-Bridge EN: tied to 12V (always enabled) -->
+  <path d="M870,214 L840,214 L840,260 L790,260 L790,310 L820,310" stroke="#4CAF50" stroke-width="2" fill="none"/>
+  <circle cx="820" cy="310" r="3" fill="#D32F2F"/>
+  <text x="828" y="256" font-size="8" fill="#4CAF50">EN → 12V (always on)</text>
+
+  <!-- H-Bridge GND: to GND bus -->
+  <path d="M870,226 L810,226 L810,960" class="wire-gnd"/>
+  <circle cx="810" cy="960" r="4" class="junction"/>
+  <text x="820" y="600" class="pin-label" fill="#757575">GND</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  LINEAR ACTUATOR                                            -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(900, 280)">
+    <rect x="0" y="0" width="170" height="60" fill="#795548" stroke="#4E342E" class="comp-box"/>
+    <text x="85" y="22" text-anchor="middle" class="comp-label">Linear Actuator</text>
+    <text x="85" y="38" text-anchor="middle" class="comp-sub">Tiller Steer</text>
+    <text x="85" y="52" text-anchor="middle" font-size="8" fill="#D7CCC8">M+ / M− from H-Bridge</text>
+    <!-- Motor terminals on left edge -->
+    <circle cx="0" cy="25" r="3" fill="#795548"/>
+    <circle cx="0" cy="40" r="3" fill="#795548"/>
+    <text x="12" y="28" font-size="7" fill="#D7CCC8">M+</text>
+    <text x="12" y="43" font-size="7" fill="#D7CCC8">M−</text>
+  </g>
+
+  <!-- H-Bridge to Actuator motor wires -->
+  <path d="M1080,185 L1120,185 L1120,305 L1070,305" class="wire-motor"/>
+  <text x="1125" y="250" font-size="9" fill="#795548">M+</text>
+
+  <path d="M1080,200 L1130,200 L1130,320 L1070,320" class="wire-motor"/>
+  <text x="1135" y="265" font-size="9" fill="#795548">M−</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  DAC + OP-AMP THROTTLE CIRCUIT (detailed)                   -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(870, 390)">
+    <rect x="0" y="0" width="210" height="150" fill="#E65100" stroke="#BF360C" class="comp-box"/>
+    <text x="105" y="22" text-anchor="middle" class="comp-label">Op-Amp Circuit</text>
+    <text x="105" y="38" text-anchor="middle" class="comp-sub">Non-inverting, gain ≈1.5×</text>
+    <!-- Op-Amp triangle symbol -->
+    <polygon points="60,55 100,72 60,89" fill="none" stroke="#FFE0B2" stroke-width="1.5"/>
+    <!-- + input (non-inverting) at top, − input (inverting) at bottom -->
+    <text x="62" y="63" font-size="8" fill="#FFE0B2">+</text>
+    <text x="62" y="84" font-size="8" fill="#FFE0B2">−</text>
+    <text x="95" y="76" font-size="7" fill="#FFCC80">out</text>
+    <!-- DAC input wire → non-inverting (+) input -->
+    <line x1="0" y1="55" x2="35" y2="55" stroke="#FFE0B2" stroke-width="1"/>
+    <rect x="35" y="48" width="16" height="14" class="resistor-body"/>
+    <text x="43" y="59" text-anchor="middle" font-size="6" fill="#333">Ri</text>
+    <line x1="51" y1="55" x2="60" y2="55" stroke="#FFE0B2" stroke-width="1"/>
+    <!-- Feedback resistor (Rf) from output to inverting (−) input -->
+    <line x1="100" y1="72" x2="140" y2="72" stroke="#FFE0B2" stroke-width="1"/>
+    <line x1="140" y1="72" x2="140" y2="35" stroke="#FFE0B2" stroke-width="1"/>
+    <rect x="132" y="21" width="16" height="14" class="resistor-body"/>
+    <text x="140" y="32" text-anchor="middle" font-size="6" fill="#333">Rf</text>
+    <line x1="140" y1="21" x2="140" y2="10" stroke="#FFE0B2" stroke-width="1"/>
+    <!-- Rf connects back to inverting (−) input at bottom of triangle -->
+    <path d="M140,10 L48,10 L48,82 L60,82" stroke="#FFE0B2" stroke-width="1" fill="none"/>
+    <!-- Ri from inverting (−) input to GND — sets gain = 1 + Rf/Ri -->
+    <line x1="48" y1="82" x2="48" y2="92" stroke="#FFE0B2" stroke-width="1"/>
+    <rect x="40" y="92" width="16" height="14" class="resistor-body"/>
+    <text x="48" y="103" text-anchor="middle" font-size="6" fill="#333">Ri</text>
+    <line x1="48" y1="106" x2="48" y2="117" stroke="#FFE0B2" stroke-width="1"/>
+    <!-- GND for Ri (tied to component GND) -->
+    <use href="#gnd-symbol" x="38" y="106" width="20" height="12"/>
+    <!-- Voltage labels -->
+    <text x="105" y="125" text-anchor="middle" font-size="9" fill="#FFE0B2">DAC 41 → 0.8V Idle</text>
+    <text x="105" y="137" text-anchor="middle" font-size="9" fill="#FFE0B2">DAC 215 → 4.2V WOT</text>
+    <!-- Pin dots -->
+    <circle cx="0" cy="55" r="3" fill="#FF5722"/>       <!-- DAC in -->
+    <circle cx="210" cy="72" r="3" fill="#FF5722"/>      <!-- V out -->
+    <circle cx="0" cy="135" r="3" class="pin-dot-12v"/>  <!-- VCC -->
+    <circle cx="0" cy="145" r="3" class="pin-dot-gnd"/>  <!-- GND -->
+    <text x="12" y="58" font-size="8" fill="#FF5722">DAC IN</text>
+    <text x="198" y="75" font-size="8" fill="#FF5722" text-anchor="end">V OUT</text>
+    <text x="12" y="138" font-size="8" fill="#FFCDD2">VCC</text>
+    <text x="12" y="148" font-size="8" fill="#BDBDBD">GND</text>
+  </g>
+
+  <!-- DAC wire: ESP32 GPIO25 → Op-Amp -->
+  <path d="M680,240 L750,240 L750,445 L870,445" class="wire-dac"/>
+  <text x="760" y="238" class="pin-label" fill="#FF5722">DAC (GPIO25)</text>
+
+  <!-- Op-Amp VCC: from 12V rail -->
+  <path d="M870,525 L830,525 L830,360 L1230,360" class="wire-12v"/>
+  <circle cx="1230" cy="360" r="4" fill="#D32F2F"/>
+  <text x="980" y="355" class="pin-label" fill="#D32F2F">12V (or 5V)</text>
+
+  <!-- Op-Amp GND: to GND bus -->
+  <path d="M870,535 L820,535 L820,960" class="wire-gnd"/>
+  <circle cx="820" cy="960" r="4" class="junction"/>
+  <text x="830" y="750" class="pin-label" fill="#757575">GND</text>
+
+  <!-- Hall-effect throttle sensor -->
+  <g transform="translate(900, 560)">
+    <rect x="0" y="0" width="170" height="60" fill="#FF6F00" stroke="#E65100" class="comp-box"/>
+    <text x="85" y="22" text-anchor="middle" class="comp-label">Hall Throttle</text>
+    <text x="85" y="38" text-anchor="middle" class="comp-sub">Outboard Sensor</text>
+    <text x="85" y="52" text-anchor="middle" font-size="8" fill="#FFE0B2">0.8V–4.2V input range</text>
+    <!-- Input on left edge -->
+    <circle cx="0" cy="30" r="3" fill="#FF5722"/>
+    <text x="12" y="33" font-size="8" fill="#FFE0B2">V in</text>
+  </g>
+
+  <!-- Op-Amp to Hall sensor wire -->
+  <path d="M1080,462 L1140,462 L1140,590 L900,590" class="wire-dac"/>
+  <text x="1145" y="530" font-size="9" fill="#FF5722">Analog V</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  LEDs with explicit GND wires                               -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- Pilot LED -->
+  <g transform="translate(870, 660)">
+    <rect x="0" y="0" width="150" height="70" fill="#F9A825" stroke="#F57F17" class="comp-box"/>
+    <text x="60" y="22" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Pilot LED</text>
+    <text x="60" y="38" text-anchor="middle" font-size="9" fill="#5D4037">GPIO18 + 330Ω</text>
+    <!-- Pin dots -->
+    <circle cx="0" cy="50" r="3" fill="#FFEB3B"/>          <!-- Anode (signal) -->
+    <circle cx="150" cy="50" r="3" class="pin-dot-gnd"/>   <!-- Cathode (GND) -->
+    <text x="12" y="53" font-size="8" fill="#5D4037">+ Anode</text>
+    <text x="138" y="53" font-size="8" fill="#BDBDBD" text-anchor="end">Cathode →</text>
+    <!-- Resistor symbol -->
+    <rect x="22" y="44" width="35" height="12" class="resistor-body"/>
+    <text x="39" y="53" text-anchor="middle" font-size="7" fill="#333">330Ω</text>
+    <!-- LED symbol (yellow for pilot) -->
+    <polygon points="77,42 92,50 77,58" fill="#FFEB3B" stroke="#333" stroke-width="1"/>
+    <line x1="92" y1="42" x2="100" y2="33" stroke="#FFEB3B" stroke-width="1"/>
+    <line x1="96" y1="45" x2="104" y2="36" stroke="#FFEB3B" stroke-width="1"/>
+  </g>
+
+  <!-- Pilot LED signal wire: GPIO18 -->
+  <path d="M680,430 L760,430 L760,710 L870,710" class="wire-led"/>
+  <text x="740" y="425" class="pin-label" fill="#FFEB3B">GPIO18</text>
+
+  <!-- Pilot LED GND wire: to GND bus -->
+  <path d="M1020,710 L1020,960" class="wire-gnd"/>
+  <circle cx="1020" cy="960" r="4" class="junction"/>
+  <text x="1030" y="840" class="pin-label" fill="#757575">GND</text>
+
+  <!-- Cruise LED -->
+  <g transform="translate(870, 770)">
+    <rect x="0" y="0" width="150" height="70" fill="#F9A825" stroke="#F57F17" class="comp-box"/>
+    <text x="60" y="22" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Cruise LED</text>
+    <text x="60" y="38" text-anchor="middle" font-size="9" fill="#5D4037">GPIO19 + 330Ω</text>
+    <!-- Pin dots -->
+    <circle cx="0" cy="50" r="3" fill="#FFEB3B"/>          <!-- Anode (signal) -->
+    <circle cx="150" cy="50" r="3" class="pin-dot-gnd"/>   <!-- Cathode (GND) -->
+    <text x="12" y="53" font-size="8" fill="#5D4037">+ Anode</text>
+    <text x="138" y="53" font-size="8" fill="#BDBDBD" text-anchor="end">Cathode →</text>
+    <!-- Resistor symbol -->
+    <rect x="22" y="44" width="35" height="12" class="resistor-body"/>
+    <text x="39" y="53" text-anchor="middle" font-size="7" fill="#333">330Ω</text>
+    <!-- LED symbol (green for cruise) -->
+    <polygon points="77,42 92,50 77,58" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+    <line x1="92" y1="42" x2="100" y2="33" stroke="#4CAF50" stroke-width="1"/>
+    <line x1="96" y1="45" x2="104" y2="36" stroke="#4CAF50" stroke-width="1"/>
+  </g>
+
+  <!-- Cruise LED signal wire: GPIO19 -->
+  <path d="M680,470 L740,470 L740,820 L870,820" class="wire-led"/>
+  <text x="720" y="490" class="pin-label" fill="#FFEB3B">GPIO19</text>
+
+  <!-- Cruise LED GND wire: to GND bus -->
+  <path d="M1020,820 L1020,960" class="wire-gnd"/>
+  <circle cx="1020" cy="960" r="4" class="junction"/>
+  <text x="1030" y="900" class="pin-label" fill="#757575">GND</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  ESP32 POWER CONNECTIONS                                    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- ESP32 3V3 out → 3V3 rail (route ABOVE pilot switch box to avoid overlap) -->
+  <!-- Pilot switch box is at (100,600)-(250,685). Route above at y=590. -->
+  <path d="M440,620 L420,620 L420,590 L30,590" class="wire-vcc"/>
+  <circle cx="30" cy="590" r="4" fill="#E91E63"/>
+  <text x="200" y="584" class="pin-label" fill="#E91E63">3V3 out</text>
+
+  <!-- ESP32 GND → GND bus -->
+  <path d="M440,650 L440,960" class="wire-gnd"/>
+  <circle cx="440" cy="960" r="4" class="junction"/>
+  <text x="450" y="810" class="pin-label" fill="#757575">GND</text>
+
+  <!-- ESP32 VIN ← 12V rail (via fuse) -->
+  <path d="M680,620 L730,620 L730,410 L1230,410" class="wire-12v"/>
+  <circle cx="1230" cy="410" r="4" fill="#D32F2F"/>
+  <text x="950" y="405" class="pin-label" fill="#D32F2F">12V → VIN (5V reg)</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  12V BATTERY with FUSE                                      -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(1170, 520)">
+    <rect x="0" y="0" width="90" height="70" fill="#37474F" stroke="#263238" class="comp-box"/>
+    <text x="45" y="25" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">12V</text>
+    <text x="45" y="42" text-anchor="middle" font-size="9" fill="#90A4AE">Battery</text>
+    <!-- + terminal to 12V rail -->
+    <line x1="45" y1="0" x2="45" y2="-20" stroke="#D32F2F" stroke-width="3"/>
+    <!-- - terminal stub (external wire handles full run to GND bus) -->
+    <line x1="45" y1="70" x2="45" y2="80" class="wire-gnd"/>
+    <text x="45" y="58" text-anchor="middle" font-size="7" fill="#78909C">+ −</text>
+  </g>
+
+  <!-- Battery + to 12V rail via FUSE (on positive rail, not ground) -->
+  <!-- Terminal wire goes from battery top (y=500 abs) up to fuse -->
+  <line x1="1215" y1="500" x2="1215" y2="490" stroke="#D32F2F" stroke-width="3"/>
+  <use href="#fuse" x="1195" y="474" width="40" height="16"/>
+  <text x="1215" y="468" text-anchor="middle" font-size="8" fill="#D32F2F">10A fuse</text>
+  <!-- Fuse output to 12V rail -->
+  <line x1="1215" y1="474" x2="1215" y2="460" stroke="#D32F2F" stroke-width="3"/>
+  <line x1="1215" y1="460" x2="1230" y2="460" stroke="#D32F2F" stroke-width="3"/>
+  <circle cx="1230" cy="460" r="4" fill="#D32F2F"/>
+  <circle cx="1230" cy="520" r="4" fill="#D32F2F"/>
+  <!-- Battery − to GND bus -->
+  <line x1="1215" y1="590" x2="1215" y2="960" class="wire-gnd"/>
+  <circle cx="1215" cy="960" r="4" class="junction"/>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  LEGEND (top-left)                                          -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(20, 80)">
+    <rect x="0" y="0" width="260" height="155" fill="#fff" stroke="#ccc" stroke-width="1" rx="6" opacity="0.92"/>
+    <text x="130" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Wire Color Legend</text>
+    <line x1="10" y1="24" x2="250" y2="24" stroke="#eee"/>
+    
+    <line x1="15" y1="38" x2="40" y2="38" class="wire-sda"/>
+    <text x="48" y="42" font-size="9" fill="#333">SDA (Orange)</text>
+    
+    <line x1="15" y1="52" x2="40" y2="52" class="wire-scl"/>
+    <text x="48" y="56" font-size="9" fill="#333">SCL (Brown)</text>
+    
+    <line x1="15" y1="66" x2="40" y2="66" class="wire-pilot-pot"/>
+    <text x="48" y="70" font-size="9" fill="#333">Pilot Pot (Yellow)</text>
+    
+    <line x1="15" y1="80" x2="40" y2="80" class="wire-cruise-pot"/>
+    <text x="48" y="84" font-size="9" fill="#333">Cruise Pot (Grey)</text>
+    
+    <line x1="15" y1="94" x2="40" y2="94" class="wire-pilot-sw"/>
+    <text x="48" y="98" font-size="9" fill="#333">Pilot SW (Green)</text>
+    
+    <line x1="15" y1="108" x2="40" y2="108" class="wire-cruise-sw"/>
+    <text x="48" y="112" font-size="9" fill="#333">Cruise SW (Red)</text>
+    
+    <line x1="15" y1="122" x2="40" y2="122" class="wire-vcc"/>
+    <text x="48" y="126" font-size="9" fill="#333">3V3 Power</text>
+    
+    <line x1="15" y1="136" x2="40" y2="136" class="wire-gnd"/>
+    <text x="48" y="140" font-size="9" fill="#333">GND</text>
+    
+    <line x1="130" y1="38" x2="155" y2="38" class="wire-pwm"/>
+    <text x="163" y="42" font-size="9" fill="#333">PWM Motor</text>
+    
+    <line x1="130" y1="52" x2="155" y2="52" class="wire-dac"/>
+    <text x="163" y="56" font-size="9" fill="#333">DAC Throttle (Dk Orange)</text>
+    
+    <line x1="130" y1="66" x2="155" y2="66" class="wire-led"/>
+    <text x="163" y="70" font-size="9" fill="#333">LED Output</text>
+    
+    <line x1="130" y1="80" x2="155" y2="80" class="wire-12v"/>
+    <text x="163" y="84" font-size="9" fill="#333">12V Power</text>
+    
+    <line x1="130" y1="94" x2="155" y2="94" class="wire-motor"/>
+    <text x="163" y="98" font-size="9" fill="#333">Motor Output</text>
+
+    <!-- Junction dot legend -->
+    <circle cx="145" cy="112" r="3" fill="#333"/>
+    <text x="153" y="116" font-size="9" fill="#333">Junction</text>
+  </g>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  NOTES                                                      -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(20, 870)">
+    <rect x="0" y="0" width="500" height="55" fill="#fff" stroke="#ccc" stroke-width="1" rx="6" opacity="0.9"/>
+    <text x="10" y="14" font-size="9" fill="#555" font-weight="bold">⚠ Important Notes:</text>
+    <text x="10" y="28" font-size="9" fill="#555">• All switches: INPUT_PULLUP (internal pullup, LOW=active) — switch connects GPIO to GND when closed</text>
+    <text x="10" y="41" font-size="9" fill="#555">• I2C pullups provided by ESP32 internally (no external resistors needed)</text>
+    <text x="10" y="54" font-size="9" fill="#555">• GPIO34 is input-only — no internal pullup available · H-Bridge EN must be HIGH for motor</text>
+  </g>
+
+  <!-- Version stamp -->
+  <text x="1240" y="1010" text-anchor="end" font-size="8" fill="#aaa">v2.14 schematic rev3 — I2C internal pullups, rerouted wires, switch colors (green/red), pot colors (yellow/grey)</text>
+
+</svg>
